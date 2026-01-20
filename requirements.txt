@@ -1,0 +1,112 @@
+# Основные зависимости
+aiogram==3.3.0
+aiohttp==3.9.1
+python-dotenv==1.0.0
+
+# База данных
+asyncpg==0.29.0
+SQLAlchemy==2.0.23
+alembic==1.13.1
+psycopg2-binary==2.9.9
+
+# Redis
+redis==5.0.1
+aioredis==2.0.1
+
+# Яндекс Облако
+yandex-cloud==0.274.0
+boto3==1.34.17
+botocore==1.34.17
+
+# Утилиты
+Pillow==10.2.0
+qrcode==7.4.2
+pyzbar==0.1.9
+pytz==2024.1
+python-dateutil==2.8.2
+cachetools==5.3.2
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Разработка и тестирование
+pytest==7.4.4
+pytest-asyncio==0.21.1
+black==23.12.1
+isort==5.13.2
+flake8==7.0.0
+mypy==1.8.0
+
+# Документация
+sphinx==7.2.6
+sphinx-rtd-theme==2.0.0
+
+# Мониторинг
+prometheus-client==0.19.0
+structlog==23.2.0
+
+# Дополнительные утилиты
+python-multipart==0.0.6
+ujson==5.8.0
+orjson==3.9.10
+tenacity==8.2.3
+
+# Дата и время
+arrow==1.3.0
+pendulum==2.1.2
+
+# Валидация
+cerberus==1.3.5
+voluptuous==0.14.2
+
+# Безопасность
+python-jose[cryptography]==3.3.0
+passlib==1.7.4
+bcrypt==4.1.2
+
+# Асинхронность
+anyio==4.2.0
+asyncio-throttle==1.0.2
+
+# Логирование
+loguru==0.7.2
+colorlog==6.8.0
+
+# API
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Excel/CSV
+openpyxl==3.1.2
+pandas==2.1.3
+
+# Миграции БД
+alembic==1.13.1
+sqlalchemy-utils==0.41.1
+
+# Кэширование
+redis-py==5.0.1
+aiocache==0.12.0
+
+# Тестирование
+pytest-cov==4.1.0
+pytest-xdist==3.5.0
+pytest-mock==3.12.0
+pytest-asyncio==0.21.1
+pytest-timeout==2.2.0
+
+# Форматирование кода
+black==23.12.1
+isort==5.13.2
+autoflake==2.2.0
+
+# Статический анализ
+mypy==1.8.0
+flake8==7.0.0
+bandit==1.7.7
+safety==2.3.5
+
+# Деплой
+docker==6.1.3
+docker-compose==1.29.2
+fabric==3.0.1
+invoke==2.2.0
