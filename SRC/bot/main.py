@@ -251,4 +251,45 @@ async def main():
     """Основная функция запуска бота"""
     try:
         # Инициализация Redis для хранения состояний
-        redis_client = redis.Redis(
+        redis_client = redis.Redis(host=settings.redis_host,
+            port=settings.redis_port,
+            password=settings.redis_password,
+            db=settings.redis_db,
+            decode_responses=True
+        )
+        
+        # Инициализация хранилища FSM
+        storage = RedisStorage(redis=redis_client)
+        dp.storage = storage
+        
+        # Инициализация базы данных
+        await init_db()
+        logger.info("База данных инициализирована")
+        
+        # Подключение обработчиков
+        from src.handlers import (
+            start, warehouse, ttk, tasks, 
+            reports, admin, akp
+        )
+        
+        # Регистрация роутеров
+        dp.include_router(start.router)
+        dp.include_router(warehouse.router)
+        dp.include_router(ttk.router)
+        dp.include_router(tasks.router)
+        dp.include_router(reports.router)
+        dp.include_router(admin.router)
+        dp.include_router(akp.router)
+        
+        # Удаляем вебхук (если был)
+        await bot.delete_webhook(drop_pending_updates=True)
+        
+        logger.info("Бот запускается в режиме polling...")
+        await dp.start_polling(bot)
+        
+    except Exception as e:
+        logger.critical(f"Критическая ошибка: {e}", exc_info=True)
+        sys.exit(1)
+
+if name == "__main__":
+    asyncio.run(main())
