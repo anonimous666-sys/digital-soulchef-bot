@@ -1,0 +1,14 @@
+nano .env 
+# Бот
+BOT_TOKEN= 7974499253:AAHukz49jnUmsDW-mmA1mzkePohfy6LYNqs
+BOT_MODE=polling  # для начала используем polling
+
+# База данных (данные из шага 2)
+DATABASE_HOST=<rc1b-j7dllpresedfgp6f.mdb.yandexcloud.net>
+DATABASE_PORT=6432
+DATABASE_NAME=bot_db
+DATABASE_USER=bot_user
+DATABASE_PASSWORD=Vitepo12345
+
+# Администратор
+ADMIN_IDS= 6550215753
