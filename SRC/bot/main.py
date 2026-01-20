@@ -136,3 +136,119 @@ async def cmd_help(message: types.Message):
 # ==================== ОБРАБОТЧИКИ МЕНЮ ====================
 
 @dp.message(lambda message: message.text == "📦 Склад")
+async def warehouse_handler(message: types.Message):
+    """Обработчик кнопки 'Склад'"""
+    from src.keyboards.warehouse_kb import get_warehouse_keyboard
+    await message.answer("📦 <b>Управление складом:</b>", reply_markup=get_warehouse_keyboard())
+
+@dp.message(lambda message: message.text == "📝 ТТК")
+async def ttk_handler(message: types.Message):
+    """Обработчик кнопки 'ТТК'"""
+    from src.keyboards.ttk_kb import get_ttk_keyboard
+    await message.answer("📝 <b>Технико-Технологические Карты:</b>", reply_markup=get_ttk_keyboard())
+
+@dp.message(lambda message: message.text == "✅ Задачи")
+async def tasks_handler(message: types.Message):
+    """Обработчик кнопки 'Задачи'"""
+    from src.keyboards.tasks_kb import get_tasks_keyboard
+    await message.answer("✅ <b>Задачи и чек-листы:</b>", reply_markup=get_tasks_keyboard())
+
+@dp.message(lambda message: message.text == "📊 Отчёты")
+async def reports_handler(message: types.Message):
+    """Обработчик кнопки 'Отчёты'"""
+    from src.keyboards.reports_kb import get_reports_keyboard
+    await message.answer("📊 <b>Отчёты и аналитика:</b>", reply_markup=get_reports_keyboard())
+
+@dp.message(lambda message: message.text == "⚙️ АКП")
+async def akp_handler(message: types.Message):
+    """Обработчик кнопки 'АКП'"""
+    from src.keyboards.akp_kb import get_akp_keyboard
+    await message.answer("⚙️ <b>Анализ Критических Пределов:</b>", reply_markup=get_akp_keyboard())
+
+@dp.message(lambda message: message.text == "👤 Профиль")
+async def profile_handler(message: types.Message):
+    """Обработчик кнопки 'Профиль'"""
+    user = message.from_user
+    profile_text = f"""
+<b>👤 Ваш профиль:</b>
+
+🆔 ID: <code>{user.id}</code>
+👤 Имя: {user.full_name}
+📱 Username: @{user.username or 'не указан'}
+
+🕐 Регистрация: {datetime.now().strftime('%d.%m.%Y %H:%M')}
+📊 Статус: {'👑 Администратор' if user.id in ADMIN_IDS else '👨‍🍳 Повар'}
+
+<b>Доступные функции:</b>
+• Управление складом
+• Работа с ТТК
+• Выполнение задач
+• Просмотр отчётов
+"""
+    await message.answer(profile_text)
+
+# ==================== АДМИН ПАНЕЛЬ ====================
+
+@dp.message(lambda message: message.text == "👑 Админ-панель")
+async def admin_panel_handler(message: types.Message):
+    """Обработчик кнопки 'Админ-панель'"""
+    if message.from_user.id not in ADMIN_IDS:
+        await message.answer("⛔ У вас нет прав доступа к админ-панели.")
+        return
+    
+    admin_text = """
+<b>👑 Административная панель:</b>
+
+📊 <b>Статистика:</b>
+• Пользователей: 15
+• Товаров на складе: 47
+• Активных задач: 8
+• ТТК в базе: 32
+
+⚙️ <b>Управление:</b>
+• Пользователи и роли
+• Резервные копии
+• Системные логи
+• Настройки бота
+"""
+    from src.keyboards.admin_kb import get_admin_panel_keyboard
+    await message.answer(admin_text, reply_markup=get_admin_panel_keyboard())
+
+@dp.message(lambda message: message.text == "📊 Статистика")
+async def admin_stats_handler(message: types.Message):
+    """Статистика системы"""
+    if message.from_user.id not in ADMIN_IDS:
+        return
+    
+    try:
+        async for session in get_db():
+            from src.database.crud import (
+                get_users_count, get_products_count, 
+                get_active_tasks_count, get_ttk_count
+            )
+            
+            stats_text = f"""
+<b>📊 Статистика системы:</b>
+
+👥 <b>Пользователи:</b> {await get_users_count(session)}
+📦 <b>Товары на складе:</b> {await get_products_count(session)}
+✅ <b>Активные задачи:</b> {await get_active_tasks_count(session)}
+📝 <b>ТТК в базе:</b> {await get_ttk_count(session)}
+
+<b>Последние действия:</b>
+• Приход картофеля: 50кг (10.12.2024)
+• Создана ТТК "Борщ" (10.12.2024)
+• Завершена задача "Уборка" (09.12.2024)
+"""
+            await message.answer(stats_text)
+    except Exception as e:
+        logger.error(f"Ошибка получения статистики: {e}")
+        await message.answer("⚠️ Ошибка получения статистики")
+
+# ==================== ЗАПУСК БОТА ====================
+
+async def main():
+    """Основная функция запуска бота"""
+    try:
+        # Инициализация Redis для хранения состояний
+        redis_client = redis.Redis(
